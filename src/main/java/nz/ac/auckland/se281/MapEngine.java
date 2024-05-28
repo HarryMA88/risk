@@ -51,7 +51,7 @@ public class MapEngine {
     // add code here
     MessageCli.INSERT_COUNTRY.printMessage();
     while (true) {
-      String input = Utils.scanner.nextLine();
+      String input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
       try {
         processInput(input);
         break;
