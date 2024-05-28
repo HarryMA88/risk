@@ -21,7 +21,6 @@ public class Graph {
     addNode(countryB);
 
     adjNodes.get(countryA).add(countryB);
-    adjNodes.get(countryB).add(countryA);
   }
 
   public void removeNode(Country country) {
@@ -35,4 +34,10 @@ public class Graph {
     adjNodes.getOrDefault(countryA, new ArrayList<>()).remove(countryB);
     adjNodes.getOrDefault(countryB, new ArrayList<>()).remove(countryA);
   }
+
+  public Map<Country, List<Country>> getAdjNodes() {
+    return adjNodes;
+  }
+
+  
 }

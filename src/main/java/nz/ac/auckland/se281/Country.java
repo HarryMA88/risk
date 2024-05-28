@@ -11,6 +11,10 @@ public class Country {
     this.tax = tax;
   }
 
+  public Country(String name) {
+    this.name = name;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
