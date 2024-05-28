@@ -174,6 +174,15 @@ public class MapEngine {
           continent = step.getContinent();
         }
         MessageCli.CONTINENT_INFO.printMessage(continents.toString());
+        // print the taxes paid
+        int taxes = 0;
+        for (Country step : path) {
+          if (step.equals(source)) {
+            continue;
+          }
+          taxes += step.getTax();
+        }
+        MessageCli.TAX_INFO.printMessage(String.valueOf(taxes));
         break;
       }
     }
