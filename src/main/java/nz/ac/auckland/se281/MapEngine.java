@@ -50,24 +50,30 @@ public class MapEngine {
   public void showInfoCountry() {
     // add code here
     MessageCli.INSERT_COUNTRY.printMessage();
-    try {
-      String input = processInput();
-      Country country = tempCountries.get(input);
-      MessageCli.COUNTRY_INFO.printMessage(country.getName(), country.getContinent(), String.valueOf(country.getTax()));
-    } catch (InvalidCountryException e) {
-      
+    while (true) {
+      String input = Utils.scanner.nextLine();
+      try {
+        processInput(input);
+        break;
+      } catch (InvalidCountryException e) {
+        MessageCli.INVALID_COUNTRY.printMessage(input);
+        continue;
+      }
     }
   }
 
-  public String processInput() throws InvalidCountryException {
-    String input = Utils.scanner.nextLine();
+  public void processInput(String input) throws InvalidCountryException {
     boolean validCountry = false;
     for (String country : tempCountries.keySet()) {
       if (country.equals(input)) {
         validCountry = true;
       }
     }
-    return input;
+    if (!validCountry) {
+      throw new InvalidCountryException(input);
+    }
+    Country country = tempCountries.get(input);
+    MessageCli.COUNTRY_INFO.printMessage(country.getName(), country.getContinent(), String.valueOf(country.getTax()));
   }
 
   /** this method is invoked when the user run the command route. */
