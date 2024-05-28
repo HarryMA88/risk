@@ -121,6 +121,11 @@ public class MapEngine {
         continue;
       }
     }
+    // if the source is the destination print message
+    if (source.equals(destination)) {
+      MessageCli.NO_CROSSBORDER_TRAVEL.printMessage();
+      return;
+    }
     // use breadth first search
     List<Country> visited = new ArrayList<>();
     Queue<Country> queue = new LinkedList<>();
