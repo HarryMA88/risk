@@ -1,6 +1,8 @@
 package nz.ac.auckland.se281;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -122,15 +124,40 @@ public class MapEngine {
     // use breadth first search
     List<Country> visited = new ArrayList<>();
     Queue<Country> queue = new LinkedList<>();
+    Map<Country,Country> parentTracker = new HashMap<>();
     queue.add(source);
     visited.add(source);
+    parentTracker.putIfAbsent(source, null);
     while (!queue.isEmpty()) {
+      // take country from queue
       Country country = queue.poll();
+      // visit the countries unvisited neighbours and add them to the queue
+      // also keep track of which country you visited the neighbour from
       for (Country neighbour : map.getAdjNodes().get(country)) {
         if (!visited.contains(neighbour)) {
           visited.add(neighbour);
           queue.add(neighbour);
+          parentTracker.putIfAbsent(neighbour, country);
         }
+      }
+      // after visiting all the neighbours for a country, check if the destination has been visited
+      // if you visited the destination, check which country you got there from, until you reach the start
+      // reverse path
+      if (visited.contains(destination)) {
+        List<String> path = new ArrayList<>();
+        path.add(destination.getName());
+        Country child = destination;
+        while (true) {
+          Country parent = parentTracker.get(child);
+          if (child.equals(source)){
+            break;
+          }
+          path.add(parent.getName());
+          child = parent;
+        }
+        Collections.reverse(path);
+        MessageCli.ROUTE_INFO.printMessage(path.toString());
+        break;
       }
     }
   }
