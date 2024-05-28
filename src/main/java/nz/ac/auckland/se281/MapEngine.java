@@ -1,13 +1,19 @@
 package nz.ac.auckland.se281;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+
 
 /** This class is the main entry point. */
 public class MapEngine {
   private Graph map;
-  private Map<String, Country> tempCountries = new HashMap<>();
+  private Set<Country> countrySet = new HashSet<>();
 
   public MapEngine() {
     // add other code here if you want
@@ -25,10 +31,8 @@ public class MapEngine {
     for (String country : countries) {
       String[] countryInfo = country.split(",");
       map.addNode(new Country(countryInfo[0], countryInfo[1], Integer.parseInt(countryInfo[2])));
-      // add the country in a hashmap for temporary storage for adjacencies
-      tempCountries.putIfAbsent(
-          countryInfo[0],
-          new Country(countryInfo[0], countryInfo[1], Integer.parseInt(countryInfo[2])));
+      // add the country in a hashset for temporary storage for adjacencies
+      countrySet.add(new Country(countryInfo[0], countryInfo[1], Integer.parseInt(countryInfo[2])));
     }
     // add adjacent countries to each country
     for (String country : adjacencies) {
@@ -38,8 +42,15 @@ public class MapEngine {
           continue;
         }
         // use temp country map to allocate adjacencies
-        Country key = tempCountries.get(adjacencyInfo[0]);
-        Country adjacent = tempCountries.get(adjacency);
+        Country key = new Country(adjacencyInfo[0]);
+        Country adjacent = null;
+        Country check = new Country(adjacency);
+        for (Country element : countrySet) {
+          if (element.equals(check)) {
+            adjacent = element;
+            break;
+          }
+        }
         map.addEdge(key, adjacent);
       }
     }
@@ -53,7 +64,8 @@ public class MapEngine {
     while (true) {
       String input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
       try {
-        processInput(input);
+        Country country = getCountry(input);
+        MessageCli.COUNTRY_INFO.printMessage(country.getName(), country.getContinent(), String.valueOf(country.getTax()));
         break;
       } catch (InvalidCountryException e) {
         MessageCli.INVALID_COUNTRY.printMessage(input);
@@ -62,20 +74,64 @@ public class MapEngine {
     }
   }
 
-  public void processInput(String input) throws InvalidCountryException {
+  public Country getCountry(String input) throws InvalidCountryException {
     boolean validCountry = false;
-    for (String country : tempCountries.keySet()) {
-      if (country.equals(input)) {
+    Country country = null;
+    Country check = new Country(input);
+    for (Country element : countrySet) {
+      if (element.equals(check)) {
+        country = element;
         validCountry = true;
+        break;
       }
     }
     if (!validCountry) {
       throw new InvalidCountryException(input);
     }
-    Country country = tempCountries.get(input);
-    MessageCli.COUNTRY_INFO.printMessage(country.getName(), country.getContinent(), String.valueOf(country.getTax()));
+    return country;
   }
 
   /** this method is invoked when the user run the command route. */
-  public void showRoute() {}
+  public void showRoute() {
+    MessageCli.INSERT_SOURCE.printMessage();
+    Country source;
+    Country destination;
+    // get the source country
+    while (true) {
+      String input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
+      try {
+        source = getCountry(input);
+        break;
+      } catch (InvalidCountryException e) {
+        MessageCli.INVALID_COUNTRY.printMessage(input);
+        continue;
+      }
+    }
+    // get the destination country
+    MessageCli.INSERT_DESTINATION.printMessage();
+    while (true) {
+      String input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
+      try {
+        destination = getCountry(input);
+        break;
+      } catch (InvalidCountryException e) {
+        MessageCli.INVALID_COUNTRY.printMessage(input);
+        continue;
+      }
+    }
+    // use breadth first search
+    List<Country> visited = new ArrayList<>();
+    Queue<Country> queue = new LinkedList<>();
+    queue.add(source);
+    visited.add(source);
+    while (!queue.isEmpty()) {
+      Country country = queue.poll();
+      for (Country neighbour : map.getAdjNodes().get(country)) {
+        if (!visited.contains(neighbour)) {
+          visited.add(neighbour);
+          queue.add(neighbour);
+        }
+      }
+    }
+  }
 }
