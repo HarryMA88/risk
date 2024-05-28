@@ -6,7 +6,8 @@ import java.util.Map;
 
 /** This class is the main entry point. */
 public class MapEngine {
-  Graph map;
+  private Graph map;
+  private Map<String, Country> tempCountries = new HashMap<>();
 
   public MapEngine() {
     // add other code here if you want
@@ -17,7 +18,6 @@ public class MapEngine {
   private void loadMap() {
     List<String> countries = Utils.readCountries();
     List<String> adjacencies = Utils.readAdjacencies();
-    Map<String, Country> tempCountries = new HashMap<>();
     // add code here to create your data structures
     map = new Graph();
     // parse each string in the list
@@ -49,6 +49,25 @@ public class MapEngine {
   /** this method is invoked when the user run the command info-country. */
   public void showInfoCountry() {
     // add code here
+    MessageCli.INSERT_COUNTRY.printMessage();
+    try {
+      String input = processInput();
+      Country country = tempCountries.get(input);
+      MessageCli.COUNTRY_INFO.printMessage(country.getName(), country.getContinent(), String.valueOf(country.getTax()));
+    } catch (InvalidCountryException e) {
+      
+    }
+  }
+
+  public String processInput() throws InvalidCountryException {
+    String input = Utils.scanner.nextLine();
+    boolean validCountry = false;
+    for (String country : tempCountries.keySet()) {
+      if (country.equals(input)) {
+        validCountry = true;
+      }
+    }
+    return input;
   }
 
   /** this method is invoked when the user run the command route. */
