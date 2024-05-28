@@ -142,21 +142,38 @@ public class MapEngine {
       }
       // after visiting all the neighbours for a country, check if the destination has been visited
       // if you visited the destination, check which country you got there from, until you reach the start
-      // reverse path
       if (visited.contains(destination)) {
-        List<String> path = new ArrayList<>();
-        path.add(destination.getName());
+        List<Country> path = new ArrayList<>();
+        path.add(destination);
         Country child = destination;
         while (true) {
           Country parent = parentTracker.get(child);
           if (child.equals(source)){
             break;
           }
-          path.add(parent.getName());
+          path.add(parent);
           child = parent;
         }
+        // reverse path
         Collections.reverse(path);
-        MessageCli.ROUTE_INFO.printMessage(path.toString());
+        // get the path in terms of countries visited
+        List<String> visitList = new ArrayList<>();
+        for (Country step : path) {
+          visitList.add(step.getName());
+        }
+        MessageCli.ROUTE_INFO.printMessage(visitList.toString());
+        // go through path and check which continents you pass
+        List<String> continents = new ArrayList<>();
+        String continent = null;
+        for (Country step : path) {
+          if (continent == null) {
+            continents.add(step.getContinent());
+          } else if (!continent.equals(step.getContinent())) {
+            continents.add(step.getContinent());
+          }
+          continent = step.getContinent();
+        }
+        MessageCli.CONTINENT_INFO.printMessage(continents.toString());
         break;
       }
     }
