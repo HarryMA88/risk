@@ -1,7 +1,6 @@
 package nz.ac.auckland.se281;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,12 +10,12 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-
 /** This class is the main entry point. */
 public class MapEngine {
   private Graph map;
   private Set<Country> countrySet = new HashSet<>();
 
+  /** This method is the constructor for the class. */
   public MapEngine() {
     // add other code here if you want
     loadMap(); // keep this mehtod invocation
@@ -56,7 +55,6 @@ public class MapEngine {
         map.addEdge(key, adjacent);
       }
     }
-
   }
 
   /** this method is invoked when the user run the command info-country. */
@@ -67,7 +65,8 @@ public class MapEngine {
       String input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
       try {
         Country country = getCountry(input);
-        MessageCli.COUNTRY_INFO.printMessage(country.getName(), country.getContinent(), String.valueOf(country.getTax()));
+        MessageCli.COUNTRY_INFO.printMessage(
+            country.getName(), country.getContinent(), String.valueOf(country.getTax()));
         break;
       } catch (InvalidCountryException e) {
         MessageCli.INVALID_COUNTRY.printMessage(input);
@@ -76,6 +75,14 @@ public class MapEngine {
     }
   }
 
+  /**
+   * Returns the country with all of its info from a string representation of the country.
+   *
+   * @param input the string name of the country
+   * @return the country object corresponding to its name
+   * @throws InvalidCountryException this exception is thrown when the inputed country name is
+   *     invalid
+   */
   public Country getCountry(String input) throws InvalidCountryException {
     boolean validCountry = false;
     Country country = null;
@@ -129,7 +136,7 @@ public class MapEngine {
     // use breadth first search
     List<Country> visited = new ArrayList<>();
     Queue<Country> queue = new LinkedList<>();
-    Map<Country,Country> parentTracker = new HashMap<>();
+    Map<Country, Country> parentTracker = new HashMap<>();
     queue.add(source);
     visited.add(source);
     parentTracker.putIfAbsent(source, null);
@@ -146,14 +153,15 @@ public class MapEngine {
         }
       }
       // after visiting all the neighbours for a country, check if the destination has been visited
-      // if you visited the destination, check which country you got there from, until you reach the start
+      // if you visited the destination, check which country you got there from, until you reach the
+      // start
       if (visited.contains(destination)) {
         List<Country> path = new ArrayList<>();
         path.add(destination);
         Country child = destination;
         while (true) {
           Country parent = parentTracker.get(child);
-          if (child.equals(source)){
+          if (child.equals(source)) {
             break;
           }
           path.add(parent);
