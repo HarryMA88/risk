@@ -49,7 +49,7 @@ public class Graph {
   }
 
   /**
-   * This method removes a relation between two nodes
+   * This method removes a relation between two nodes.
    *
    * @param countryA first node to be removed
    * @param countryB second node to be removed

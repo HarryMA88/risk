@@ -87,6 +87,7 @@ public class MapEngine {
     boolean validCountry = false;
     Country country = null;
     Country check = new Country(input);
+    // see if the country exists
     for (Country element : countrySet) {
       if (element.equals(check)) {
         country = element;
@@ -94,6 +95,7 @@ public class MapEngine {
         break;
       }
     }
+    // if country dont exist throw exception
     if (!validCountry) {
       throw new InvalidCountryException(input);
     }

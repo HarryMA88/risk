@@ -40,13 +40,28 @@ public class Country {
   /** This method checks if two countries are the same. */
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    // if same instance return true
+    if (this == obj) {
+      return true;
+    }
+    // if null instance return false
+    if (obj == null) {
+      return false;
+    }
+    // if other class return false
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    // type cast
     Country other = (Country) obj;
+    // check if same name
     if (name == null) {
-      if (other.name != null) return false;
-    } else if (!name.equals(other.name)) return false;
+      if (other.name != null) {
+        return false;
+      }
+    } else if (!name.equals(other.name)) {
+      return false;
+    }
     return true;
   }
 
